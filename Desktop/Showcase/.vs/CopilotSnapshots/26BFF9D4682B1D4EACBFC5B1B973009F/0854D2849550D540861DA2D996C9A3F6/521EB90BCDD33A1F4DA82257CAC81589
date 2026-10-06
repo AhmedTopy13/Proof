@@ -1,0 +1,49 @@
+﻿using Showcase.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text;
+using System.Windows;
+
+namespace Showcase.ViewModel
+{
+    internal class ItemVM : INotifyPropertyChanged
+    {
+        private Item? selectedItem;
+
+        public ObservableCollection<Item> Items { get; set; } = [];
+        public Item? SelectedItem
+        {
+            get => selectedItem; set
+            {
+                selectedItem = value;
+                MessageBox.Show(value?.Title ?? "null");
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
+        public Item NewItem { get; set; } = new Item();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void AddItem()
+        {
+            Items.Add(NewItem);
+            NewItem = new Item();
+            OnPropertyChanged(nameof(Items));
+            OnPropertyChanged(nameof(NewItem));
+        }
+        public void RemoveItem()
+        {
+            if (SelectedItem != null)
+                Items.Remove(SelectedItem);
+            SelectedItem = null;
+            OnPropertyChanged(nameof(Items));
+            OnPropertyChanged(nameof(SelectedItem));
+        }
+    }
+}
